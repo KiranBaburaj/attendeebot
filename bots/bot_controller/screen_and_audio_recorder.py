@@ -42,14 +42,15 @@ class ScreenAndAudioRecorder:
         # Check operating system and use appropriate FFmpeg command
         import platform
         if platform.system() == "Windows":
-            # Windows screen capture using gdigrab - video only (no audio)
+            # Windows screen capture using gdigrab - with audio
             ffmpeg_cmd = [
                 "ffmpeg", "-y", "-thread_queue_size", "4096", 
                 "-f", "gdigrab", "-framerate", "30", 
                 "-video_size", f"{self.screen_dimensions[0]}x{self.screen_dimensions[1]}", 
                 "-i", "desktop", 
+                "-f", "dshow", "-i", "audio=Microphone (Realtek High Definition Audio)",
                 "-c:v", "libx264", "-preset", "ultrafast", "-pix_fmt", "yuv420p", 
-                "-g", "30", 
+                "-g", "30", "-c:a", "aac", "-strict", "experimental", "-b:a", "128k",
                 self.file_location
             ]
             
